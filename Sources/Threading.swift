@@ -5,6 +5,17 @@
 //  Created by Kyle Jessup on 2015-12-03.
 //  Copyright © 2015 PerfectlySoft. All rights reserved.
 //
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the Perfect.org open source project
+//
+// Copyright (c) 2015 - 2016 PerfectlySoft Inc. and the Perfect project authors
+// Licensed under Apache License v2.0
+//
+// See http://perfect.org/licensing.html for license information
+//
+//===----------------------------------------------------------------------===//
+//
 
 #if os(Linux)
 import SwiftGlibc
@@ -98,7 +109,7 @@ public struct Threading {
 		var cond = pthread_cond_t()
 
 		/// Initialize a new Event object.
-		override init() {
+		override public init() {
 			super.init()
 
 			var attr = pthread_condattr_t()
