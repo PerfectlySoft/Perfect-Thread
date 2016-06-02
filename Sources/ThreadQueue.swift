@@ -24,9 +24,13 @@
 	import Darwin
 #endif
 
+/// A thread queue which can dispatch a closure according to the queue type.
 public protocol ThreadQueue {
+    /// The queue name.
 	var name: String { get }
+    /// The queue type.
 	var type: Threading.QueueType { get }
+    /// Execute the given closure within the queue's thread.
 	func dispatch(_ closure: Threading.ThreadClosure)
 }
 
@@ -36,8 +40,11 @@ public extension Threading {
 	private static var concurrentQueues = [String:ThreadQueue]()
 	private static let queuesLock = Threading.Lock()
 
+    /// Queue type indicator.
 	public enum QueueType {
+        /// A queue which operates on only one thread.
 		case Serial
+        /// A queue which operates on a number of threads, usually equal to the number of logical CPUs.
 		case Concurrent
 	}
 
@@ -127,7 +134,7 @@ public extension Threading {
 		}
 	}
 
-	static var processorCount: Int {
+	private static var processorCount: Int {
 #if os(Linux)
 		let num = sysconf(Int32(_SC_NPROCESSORS_ONLN))
 #else
@@ -136,7 +143,8 @@ public extension Threading {
 		return num
 	}
 
-	static func getQueue(name nam: String, type: QueueType) -> ThreadQueue {
+    /// Find or create a queue indicated by name and type.
+	public static func getQueue(name nam: String, type: QueueType) -> ThreadQueue {
 		var q: ThreadQueue?
 		Threading.queuesLock.doWithLock {
 			switch type {
@@ -158,6 +166,7 @@ public extension Threading {
 		}
 		return q!
 	}
+    
 	/// Call the given closure on the "default" concurrent queue
 	/// Returns immediately.
 	public static func dispatch(closure: Threading.ThreadClosure) {

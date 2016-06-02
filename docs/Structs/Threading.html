@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Threading Struct Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Struct/Threading" class="dashAnchor"></a>
+    <a title="Threading Struct Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html"> Docs</a> (100% documented)</p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html"> Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        Threading Struct Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/ThreadQueue.html">ThreadQueue</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/Threading.html">Threading</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Threading/Lock.html">– Lock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Threading/Event.html">– Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Threading/RWLock.html">– RWLock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Threading/QueueType.html">– QueueType</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Threading</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Threading</span></code></pre>
+
+                </div>
+              </div>
+            <p>A wrapper around a variety of threading related functions and classes.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZvV13PerfectThread9Threading9noTimeoutSd"></a>
+                    <a name="//apple_ref/swift/Variable/noTimeout" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZvV13PerfectThread9Threading9noTimeoutSd">noTimeout</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Indicates that the call should have no timeout.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">noTimeout</span> <span class="o">=</span> <span class="mf">0.0</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:V13PerfectThread9Threading13ThreadClosure"></a>
+                    <a name="//apple_ref/swift/Alias/ThreadClosure" class="dashAnchor"></a>
+                    <a class="token" href="#/s:V13PerfectThread9Threading13ThreadClosure">ThreadClosure</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The function type which can be given to <code>Threading.dispatch</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">ThreadClosure</span> <span class="o">=</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:V13PerfectThread9Threading10ThreadOnce"></a>
+                    <a name="//apple_ref/swift/Alias/ThreadOnce" class="dashAnchor"></a>
+                    <a class="token" href="#/s:V13PerfectThread9Threading10ThreadOnce">ThreadOnce</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The key type used for <code>Threading.once</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">ThreadOnce</span> <span class="o">=</span> <span class="n">pthread_once_t</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:V13PerfectThread9Threading18ThreadOnceFunction"></a>
+                    <a name="//apple_ref/swift/Alias/ThreadOnceFunction" class="dashAnchor"></a>
+                    <a class="token" href="#/s:V13PerfectThread9Threading18ThreadOnceFunction">ThreadOnceFunction</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The function type which can be given to <code>Threading.once</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">ThreadOnceFunction</span> <span class="o">=</span> <span class="err">@convention</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:CV13PerfectThread9Threading4Lock"></a>
+                    <a name="//apple_ref/swift/Class/Lock" class="dashAnchor"></a>
+                    <a class="token" href="#/s:CV13PerfectThread9Threading4Lock">Lock</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A mutex-type thread lock.
+The lock can be held by only one thread. Other threads attempting to secure the lock while it is held will block.
+The lock is initialized as being recursive. The locking thread may lock multiple times, but each lock should be accompanied by an unlock.</p>
+
+                        <a href="../Structs/Threading/Lock.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">Lock</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:CV13PerfectThread9Threading5Event"></a>
+                    <a name="//apple_ref/swift/Class/Event" class="dashAnchor"></a>
+                    <a class="token" href="#/s:CV13PerfectThread9Threading5Event">Event</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A thread event object. Inherits from <code><a href="../Structs/Threading/Lock.html">Threading.Lock</a></code>.
+The event MUST be locked before <code>wait</code> or <code>signal</code> is called.
+While inside the <code>wait</code> call, the event is automatically placed in the unlocked state.
+After <code>wait</code> or <code>signal</code> return the event will be in the locked state and must be unlocked.</p>
+
+                        <a href="../Structs/Threading/Event.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Event</span><span class="p">:</span> <span class="kt">Lock</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:CV13PerfectThread9Threading6RWLock"></a>
+                    <a name="//apple_ref/swift/Class/RWLock" class="dashAnchor"></a>
+                    <a class="token" href="#/s:CV13PerfectThread9Threading6RWLock">RWLock</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A read-write thread lock.
+Permits multiple readers to hold the while, while only allowing at most one writer to hold the lock.
+For a writer to acquire the lock all readers must have unlocked.
+For a reader to acquire the lock no writers must hold the lock.</p>
+
+                        <a href="../Structs/Threading/RWLock.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">RWLock</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZFV13PerfectThread9Threading4onceFTVSC22_opaque_pthread_once_t8onceFunccT_T__T_"></a>
+                    <a name="//apple_ref/swift/Method/once(_:onceFunc:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZFV13PerfectThread9Threading4onceFTVSC22_opaque_pthread_once_t8onceFunccT_T__T_">once(_:onceFunc:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Call the provided closure on the current thread, but only if it has not been called before.
+This is useful for ensuring that initialization code is only called once in a multi-threaded process.
+Upon returning from <code>Threading.once</code> it is guaranteed that the closure has been executed and has completed.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">once</span><span class="p">(</span><span class="n">_</span> <span class="nv">threadOnce</span><span class="p">:</span> <span class="k">inout</span> <span class="kt">ThreadOnce</span><span class="p">,</span> <span class="nv">onceFunc</span><span class="p">:</span> <span class="kt">ThreadOnceFunction</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZFV13PerfectThread9Threading5sleepFT7secondsSd_T_"></a>
+                    <a name="//apple_ref/swift/Method/sleep(seconds:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZFV13PerfectThread9Threading5sleepFT7secondsSd_T_">sleep(seconds:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Block the current thread for the indicated time.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">sleep</span><span class="p">(</span><span class="n">seconds</span> <span class="nv">inSeconds</span><span class="p">:</span> <span class="kt">Double</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:OV13PerfectThread9Threading9QueueType"></a>
+                    <a name="//apple_ref/swift/Enum/QueueType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:OV13PerfectThread9Threading9QueueType">QueueType</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Queue type indicator.</p>
+
+                        <a href="../Structs/Threading/QueueType.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">QueueType</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZFV13PerfectThread9Threading8getQueueFT4nameSS4typeOS0_9QueueType_PS_11ThreadQueue_"></a>
+                    <a name="//apple_ref/swift/Method/getQueue(name:type:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZFV13PerfectThread9Threading8getQueueFT4nameSS4typeOS0_9QueueType_PS_11ThreadQueue_">getQueue(name:type:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Find or create a queue indicated by name and type.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">getQueue</span><span class="p">(</span><span class="n">name</span> <span class="nv">nam</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">QueueType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">ThreadQueue</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:ZFV13PerfectThread9Threading8dispatchFFT_T_T_"></a>
+                    <a name="//apple_ref/swift/Method/dispatch(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:ZFV13PerfectThread9Threading8dispatchFFT_T_T_">dispatch(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Call the given closure on the <q>default</q> concurrent queue
+Returns immediately.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">dispatch</span><span class="p">(</span><span class="nv">closure</span><span class="p">:</span> <span class="kt">Threading</span><span class="o">.</span><span class="kt">ThreadClosure</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2016-06-02)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.6.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

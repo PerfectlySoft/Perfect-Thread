@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Event Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../../js/jquery.min.js" defer></script>
+    <script src="../../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Class/Event" class="dashAnchor"></a>
+    <a title="Event Class Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../../index.html"> Docs</a> (100% documented)</p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../../index.html"> Reference</a>
+        <img id="carat" src="../../img/carat.png" />
+        Event Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Protocols/ThreadQueue.html">ThreadQueue</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../../Structs.html">Structs</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../../Structs/Threading.html">Threading</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/Threading/Lock.html">– Lock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/Threading/Event.html">– Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/Threading/RWLock.html">– RWLock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/Threading/QueueType.html">– QueueType</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Event</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Event</span><span class="p">:</span> <span class="kt">Lock</span></code></pre>
+
+                </div>
+              </div>
+            <p>A thread event object. Inherits from <code><a href="../../Structs/Threading/Lock.html">Threading.Lock</a></code>.
+The event MUST be locked before <code>wait</code> or <code>signal</code> is called.
+While inside the <code>wait</code> call, the event is automatically placed in the unlocked state.
+After <code>wait</code> or <code>signal</code> return the event will be in the locked state and must be unlocked.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FCV13PerfectThread9Threading5EventcFT_S1_"></a>
+                    <a name="//apple_ref/swift/Method/init()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FCV13PerfectThread9Threading5EventcFT_S1_">init()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Initialize a new Event object.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="k">override</span> <span class="kd">public</span> <span class="nf">init</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FCV13PerfectThread9Threading5Event6signalFT_Sb"></a>
+                    <a name="//apple_ref/swift/Method/signal()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FCV13PerfectThread9Threading5Event6signalFT_Sb">signal()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Signal at most ONE thread which may be waiting on this event.
+Has no effect if there is no waiting thread.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">signal</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FCV13PerfectThread9Threading5Event9broadcastFT_Sb"></a>
+                    <a name="//apple_ref/swift/Method/broadcast()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FCV13PerfectThread9Threading5Event9broadcastFT_Sb">broadcast()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Signal ALL threads which may be waiting on this event.
+Has no effect if there is no waiting thread.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">broadcast</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:FCV13PerfectThread9Threading5Event4waitFT7secondsSd_Sb"></a>
+                    <a name="//apple_ref/swift/Method/wait(seconds:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FCV13PerfectThread9Threading5Event4waitFT7secondsSd_Sb">wait(seconds:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Wait on this event for another thread to call signal.
+Blocks the calling thread until a signal is received or the timeout occurs.
+Returns true only if the signal was received.
+Returns false upon timeout or error.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">wait</span><span class="p">(</span><span class="n">seconds</span> <span class="nv">secs</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="kt">Threading</span><span class="o">.</span><span class="n">noTimeout</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2016-06-02)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.6.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

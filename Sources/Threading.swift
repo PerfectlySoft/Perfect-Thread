@@ -28,9 +28,10 @@ import Darwin
 /// A wrapper around a variety of threading related functions and classes.
 public struct Threading {
 
-	public static var noTimeout = 0.0
+    /// Indicates that the call should have no timeout.
+	public static let noTimeout = 0.0
 	
-	/// Non-instantiable.
+	// Non-instantiable.
 	private init() {}
 
 	/// The function type which can be given to `Threading.once`.
@@ -91,6 +92,7 @@ public struct Threading {
 			return 0 == pthread_mutex_unlock(&self.mutex)
 		}
 
+        /// Acquire the lock, execute the closure, release the lock.
 		public func doWithLock(closure: () throws -> ()) rethrows {
 			let _ = self.lock()
 			defer {
@@ -203,6 +205,7 @@ public struct Threading {
 			return 0 == pthread_rwlock_unlock(&self.lock)
 		}
 		
+        /// Acquire the read lock, execute the closure, release the lock.
 		public func doWithReadLock(closure: () throws -> ()) rethrows {
 			let _ = self.readLock()
 			defer {
@@ -210,7 +213,8 @@ public struct Threading {
 			}
 			try closure()
 		}
-		
+        
+        /// Acquire the write lock, execute the closure, release the lock.
 		public func doWithWriteLock(closure: () throws -> ()) rethrows {
 			let _ = self.writeLock()
 			defer {
@@ -223,16 +227,11 @@ public struct Threading {
 	/// Call the provided closure on the current thread, but only if it has not been called before.
 	/// This is useful for ensuring that initialization code is only called once in a multi-threaded process.
 	/// Upon returning from `Threading.once` it is guaranteed that the closure has been executed and has completed.
-	#if swift(>=3.0)
 	public static func once(_ threadOnce: inout ThreadOnce, onceFunc: ThreadOnceFunction) {
 		pthread_once(&threadOnce, onceFunc)
 	}
-	#else
-	public static func once(inout threadOnce: ThreadOnce, onceFunc: ThreadOnceFunction) {
-		pthread_once(&threadOnce, onceFunc)
-	}
-	#endif
 
+    /// Block the current thread for the indicated time.
 	public static func sleep(seconds inSeconds: Double) {
 		guard inSeconds >= 0.0 else {
 			return
