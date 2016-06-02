@@ -35,7 +35,7 @@ class PerfectThreadTests: XCTestCase {
     }
     
     func testConcurrentQueue() {
-        let q = Threading.getQueue(name: "concurrent", type: .Concurrent)
+        let q = Threading.getQueue(name: "concurrent", type: .concurrent)
         
         var t1 = 0, t2 = 0, t3 = 0
         
@@ -57,7 +57,7 @@ class PerfectThreadTests: XCTestCase {
     }
     
     func testSerialQueue() {
-        let q = Threading.getQueue(name: "serial", type: .Serial)
+        let q = Threading.getQueue(name: "serial", type: .serial)
         
         var t1 = 0
         

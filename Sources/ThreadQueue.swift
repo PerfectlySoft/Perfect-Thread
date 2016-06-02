@@ -43,14 +43,14 @@ public extension Threading {
     /// Queue type indicator.
 	public enum QueueType {
         /// A queue which operates on only one thread.
-		case Serial
+		case serial
         /// A queue which operates on a number of threads, usually equal to the number of logical CPUs.
-		case Concurrent
+		case concurrent
 	}
 
 	private class SerialQueue: ThreadQueue {
 		let name: String
-		let type = Threading.QueueType.Serial
+		let type = Threading.QueueType.serial
 
 		private typealias ThreadFunc = Threading.ThreadClosure
 		private let lock = Threading.Event()
@@ -92,7 +92,7 @@ public extension Threading {
 
 	private class ConcurrentQueue: ThreadQueue {
 		let name: String
-		let type = Threading.QueueType.Concurrent
+		let type = Threading.QueueType.concurrent
 
 		private typealias ThreadFunc = Threading.ThreadClosure
 		private let lock = Threading.Event()
@@ -148,14 +148,14 @@ public extension Threading {
 		var q: ThreadQueue?
 		Threading.queuesLock.doWithLock {
 			switch type {
-			case .Serial:
+			case .serial:
 				if let qTst = Threading.serialQueues[nam] {
 					q = qTst
 				} else {
 					q = SerialQueue(name: nam)
 					Threading.serialQueues[nam] = q
 				}
-			case .Concurrent:
+			case .concurrent:
 				if let qTst = Threading.concurrentQueues[nam] {
 					q = qTst
 				} else {
@@ -170,7 +170,7 @@ public extension Threading {
 	/// Call the given closure on the "default" concurrent queue
 	/// Returns immediately.
 	public static func dispatch(closure: Threading.ThreadClosure) {
-		let q = Threading.getQueue(name: "default", type: .Concurrent)
+		let q = Threading.getQueue(name: "default", type: .concurrent)
 		q.dispatch(closure)
 	}
 
@@ -191,7 +191,7 @@ public extension Threading {
 			p in
 		#if swift(>=3.0)
 			if let pCheck = p {
-				let unleakyObject = Unmanaged<IsThisRequired>.fromOpaque(OpaquePointer(pCheck)).takeRetainedValue()
+				let unleakyObject = Unmanaged<IsThisRequired>.fromOpaque(pCheck).takeRetainedValue()
 				unleakyObject.closure()
 			}
 		#else
@@ -202,11 +202,7 @@ public extension Threading {
 		#endif
 			return nil
 		}
-	#if swift(>=3.0)
-		let leakyObject = UnsafeMutablePointer<Void>(OpaquePointer(bitPattern: Unmanaged.passRetained(holderObject)))
-	#else
-		let leakyObject = UnsafeMutablePointer<Void>(Unmanaged.passRetained(holderObject).toOpaque())
-	#endif
+		let leakyObject = Unmanaged.passRetained(holderObject).toOpaque()
 		pthread_create(&thrdSlf, &attr, pthreadFunc, leakyObject)
 	}
 
