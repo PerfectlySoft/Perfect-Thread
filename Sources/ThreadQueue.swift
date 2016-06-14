@@ -147,26 +147,25 @@ public extension Threading {
     
     /// Find or create a queue indicated by name and type.
     public static func getQueue(name nam: String, type: QueueType) -> ThreadQueue {
-        var q: ThreadQueue?
-        Threading.queuesLock.doWithLock {
-            switch type {
-            case .serial:
-                if let qTst = Threading.serialQueues[nam] {
-                    q = qTst
-                } else {
-                    q = SerialQueue(name: nam)
-                    Threading.serialQueues[nam] = q
-                }
-            case .concurrent:
-                if let qTst = Threading.concurrentQueues[nam] {
-                    q = qTst
-                } else {
-                    q = ConcurrentQueue(name: nam)
-                    Threading.concurrentQueues[nam] = q
-                }
+        let _ = Threading.queuesLock.lock()
+        defer { let _ = Threading.queuesLock.unlock() }
+        
+        switch type {
+        case .serial:
+            if let qTst = Threading.serialQueues[nam] {
+                return qTst
             }
+            let q = SerialQueue(name: nam)
+            Threading.serialQueues[nam] = q
+            return q
+        case .concurrent:
+            if let qTst = Threading.concurrentQueues[nam] {
+                return qTst
+            }
+            let q = ConcurrentQueue(name: nam)
+            Threading.concurrentQueues[nam] = q
+            return q
         }
-        return q!
     }
     
     /// Call the given closure on the "default" concurrent queue
