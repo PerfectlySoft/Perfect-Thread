@@ -81,6 +81,9 @@ public extension Threading {
                             block = self.q.removeFirst()
                         } else {
                             let _ = self.lock.wait()
+                            if self.q.count > 0 {
+                                block = self.q.removeFirst()
+                            }
                         }
                     }
                     if let b = block {
