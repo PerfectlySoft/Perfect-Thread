@@ -41,11 +41,8 @@ public struct Threading {
 
 	/// The key type used for `Threading.once`.
 	public typealias ThreadOnce = pthread_once_t
-	#if swift(>=3.0)
+	
 	typealias VoidPointer = UnsafeMutablePointer<Void>?
-	#else
-	typealias VoidPointer = UnsafeMutablePointer<Void>
-	#endif
 	typealias ThreadFunction = @convention(c) (VoidPointer) -> VoidPointer
 	
 	final class IsThisRequired {
@@ -116,9 +113,9 @@ public struct Threading {
 
 			var attr = pthread_condattr_t()
 			pthread_condattr_init(&attr)
-			#if os (Linux)
+        #if os (Linux)
 			pthread_condattr_setclock(&attr, CLOCK_MONOTONIC)
-			#endif
+		#endif
 			pthread_cond_init(&cond, &attr)
 			pthread_condattr_destroy(&attr)
 		}
@@ -153,7 +150,6 @@ public struct Threading {
 			tm.tv_nsec = (waitMillis - (tm.tv_sec * 1000)) * 1000000
 
 			let ret = pthread_cond_timedwait_relative_np(&self.cond, &self.mutex, &tm)
-
 			return ret == 0;
 		}
 	}
