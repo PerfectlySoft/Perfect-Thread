@@ -34,16 +34,12 @@ public struct Threading {
 	// Non-instantiable.
 	private init() {}
 
-	/// The function type which can be given to `Threading.once`.
-	public typealias ThreadOnceFunction = @convention(c) () -> ()
 	/// The function type which can be given to `Threading.dispatch`.
 	public typealias ThreadClosure = () -> ()
-
 	/// The key type used for `Threading.once`.
 	public typealias ThreadOnce = pthread_once_t
 	
-	typealias VoidPointer = UnsafeMutablePointer<Void>?
-	typealias ThreadFunction = @convention(c) (VoidPointer) -> VoidPointer
+    typealias ThreadFunction = @convention(c) (UnsafeMutablePointer<Void>?) -> UnsafeMutablePointer<Void>?
 	
 	final class IsThisRequired {
 		let closure: ThreadClosure
@@ -223,9 +219,9 @@ public struct Threading {
 	/// Call the provided closure on the current thread, but only if it has not been called before.
 	/// This is useful for ensuring that initialization code is only called once in a multi-threaded process.
 	/// Upon returning from `Threading.once` it is guaranteed that the closure has been executed and has completed.
-	public static func once(_ threadOnce: inout ThreadOnce, onceFunc: ThreadOnceFunction) {
-		pthread_once(&threadOnce, onceFunc)
-	}
+//	public static func once(_ threadOnce: inout ThreadOnce, onceFunc: ThreadOnceFunction) {
+//		let _ = pthread_once(&threadOnce, onceFunc)
+//	}
 
     /// Block the current thread for the indicated time.
 	public static func sleep(seconds inSeconds: Double) {

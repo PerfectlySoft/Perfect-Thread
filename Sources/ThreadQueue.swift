@@ -194,12 +194,12 @@ public extension Threading {
         let pthreadFunc: ThreadFunction = {
             p in
             if let pCheck = p {
-                let unleakyObject = Unmanaged<IsThisRequired>.fromOpaque(pCheck).takeRetainedValue()
+                let unleakyObject = Unmanaged<IsThisRequired>.fromOpaque(OpaquePointer(pCheck)).takeRetainedValue()
                 unleakyObject.closure()
             }
             return nil
         }
-        let leakyObject = Unmanaged.passRetained(holderObject).toOpaque()
+        let leakyObject = UnsafeMutablePointer<Void>(OpaquePointer(bitPattern: Unmanaged.passRetained(holderObject)))
         pthread_create(&thrdSlf, &attr, pthreadFunc, leakyObject)
     }
 }
