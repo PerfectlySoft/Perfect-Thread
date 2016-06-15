@@ -36,18 +36,7 @@ public struct Threading {
 
 	/// The function type which can be given to `Threading.dispatch`.
 	public typealias ThreadClosure = () -> ()
-	/// The key type used for `Threading.once`.
-	public typealias ThreadOnce = pthread_once_t
 	
-    typealias ThreadFunction = @convention(c) (UnsafeMutablePointer<Void>?) -> UnsafeMutablePointer<Void>?
-	
-	final class IsThisRequired {
-		let closure: ThreadClosure
-		init(closure: ThreadClosure) {
-			self.closure = closure
-		}
-	}
-
 	/// A mutex-type thread lock.
 	/// The lock can be held by only one thread. Other threads attempting to secure the lock while it is held will block.
 	/// The lock is initialized as being recursive. The locking thread may lock multiple times, but each lock should be accompanied by an unlock.

@@ -28,12 +28,6 @@ import XCTest
 
 class PerfectThreadTests: XCTestCase {
     
-    func getNow() -> Double {
-        var posixTime = timeval()
-        gettimeofday(&posixTime, nil)
-        return Double((posixTime.tv_sec * 1000) + (Int(posixTime.tv_usec)/1000))
-    }
-    
     func testConcurrentQueue() {
         let q = Threading.getQueue(name: "concurrent", type: .concurrent)
         
@@ -78,6 +72,13 @@ class PerfectThreadTests: XCTestCase {
     }
 
     func testThreadSleep() {
+        
+        func getNow() -> Double {
+            var posixTime = timeval()
+            gettimeofday(&posixTime, nil)
+            return Double(posixTime.tv_sec * 1000 + Int(posixTime.tv_usec) / 1000)
+        }
+        
         let now = getNow()
         Threading.sleep(seconds: 1.9)
         let nower = getNow()
