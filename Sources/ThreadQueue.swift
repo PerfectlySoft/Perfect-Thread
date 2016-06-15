@@ -199,7 +199,7 @@ public extension Threading {
         
         let holderObject = IsThisRequired(closure: closure)
         
-    #if Xcode
+    #if Xcode // !FIX! snapshot included with Xcode beta 1 has a problem…
         typealias ThreadFunction = @convention(c) (UnsafeMutablePointer<Void>) -> UnsafeMutablePointer<Void>?
         let pthreadFunc: ThreadFunction = { p in
             let unleakyObject = Unmanaged<IsThisRequired>.fromOpaque(OpaquePointer(p)).takeRetainedValue()
