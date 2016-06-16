@@ -198,13 +198,24 @@ public extension Threading {
         }
         
         let holderObject = IsThisRequired(closure: closure)
-        
+    #if os(OSX)
         typealias ThreadFunction = @convention(c) (UnsafeMutablePointer<Void>) -> UnsafeMutablePointer<Void>?
         let pthreadFunc: ThreadFunction = { p in
             let unleakyObject = Unmanaged<IsThisRequired>.fromOpaque(OpaquePointer(p)).takeRetainedValue()
             unleakyObject.closure()
             return nil
         }
+    #else
+        typealias ThreadFunction = @convention(c) (UnsafeMutablePointer<Void>?) -> UnsafeMutablePointer<Void>?
+        let pthreadFunc: ThreadFunction = { p in
+            guard let p = p else {
+                return nil
+            }
+            let unleakyObject = Unmanaged<IsThisRequired>.fromOpaque(OpaquePointer(p)).takeRetainedValue()
+            unleakyObject.closure()
+            return nil
+        }
+    #endif
         
         let leakyObject = UnsafeMutablePointer<Void>(OpaquePointer(bitPattern: Unmanaged.passRetained(holderObject)))
         pthread_create(&thrdSlf, &attr, pthreadFunc, leakyObject)
