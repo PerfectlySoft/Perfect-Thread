@@ -58,6 +58,7 @@ public struct Threading {
 
 		/// Attempt to grab the lock.
 		/// Returns true if the lock was successful.
+        @discardableResult
 		public func lock() -> Bool {
 			return 0 == pthread_mutex_lock(&self.mutex)
 		}
@@ -70,6 +71,7 @@ public struct Threading {
 		}
 
 		/// Unlock. Returns true if the lock was held by the current thread and was successfully unlocked. ior the lock count was decremented.
+        @discardableResult
 		public func unlock() -> Bool {
 			return 0 == pthread_mutex_unlock(&self.mutex)
 		}
@@ -111,12 +113,14 @@ public struct Threading {
 
 		/// Signal at most ONE thread which may be waiting on this event.
 		/// Has no effect if there is no waiting thread.
+        @discardableResult
 		public func signal() -> Bool {
 			return 0 == pthread_cond_signal(&self.cond)
 		}
 
 		/// Signal ALL threads which may be waiting on this event.
 		/// Has no effect if there is no waiting thread.
+        @discardableResult
 		public func broadcast() -> Bool {
 			return 0 == pthread_cond_broadcast(&self.cond)
 		}
@@ -158,6 +162,7 @@ public struct Threading {
 
 		/// Attempt to acquire the lock for reading.
 		/// Returns false if an error occurs.
+        @discardableResult
 		public func readLock() -> Bool {
 			return 0 == pthread_rwlock_rdlock(&self.lock)
 		}
@@ -170,6 +175,7 @@ public struct Threading {
 
 		/// Attempt to acquire the lock for writing.
 		/// Returns false if an error occurs.
+        @discardableResult
 		public func writeLock() -> Bool {
 			return 0 == pthread_rwlock_wrlock(&self.lock)
 		}
@@ -182,6 +188,7 @@ public struct Threading {
 
 		/// Unlock a lock which is held for either reading or writing.
 		/// Returns false if an error occurs.
+        @discardableResult
 		public func unlock() -> Bool {
 			return 0 == pthread_rwlock_unlock(&self.lock)
 		}
