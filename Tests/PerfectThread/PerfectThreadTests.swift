@@ -28,7 +28,7 @@ import XCTest
 
 class PerfectThreadTests: XCTestCase {
     
-    func testConcurrentQueue() {
+    func testConcurrentQueue1() {
         let q = Threading.getQueue(name: "concurrent", type: .concurrent)
         
         var t1 = 0, t2 = 0, t3 = 0
@@ -49,12 +49,51 @@ class PerfectThreadTests: XCTestCase {
         
         XCTAssert(t1 == 1 && t2 == 1 && t3 == 1)
     }
-    
+	
+	func testConcurrentQueue2() {
+		_ = Threading.getQueue(name: "concurrent", type: .concurrent)
+		var expects = [XCTestExpectation]()
+		let threadCount = 32
+		let iterationCount = 10000
+		for n in 0..<threadCount {
+			expects.append(self.expectation(withDescription: "ex\(n)"))
+		}
+		
+		for i in 0..<threadCount {
+			Threading.dispatch {
+				var countDown = iterationCount
+				let event = Threading.Event()
+				for _ in 0..<iterationCount {
+					let queue = Threading.getQueue(name: "concurrent", type: .concurrent)
+					queue.dispatch {
+						event.lock()
+						countDown -= 1
+						event.signal()
+						event.unlock()
+					}
+				}
+				while true {
+					event.lock()
+					defer { event.unlock() }
+					if countDown == 0 {
+						break
+					}
+					_ = event.wait()
+				}
+				expects[i].fulfill()
+			}
+		}
+		self.waitForExpectations(withTimeout: 60.0) {
+			ok in
+			
+		}
+	}
+	
     func testSerialQueue() {
         let q = Threading.getQueue(name: "serial", type: .serial)
-        
+		
         var t1 = 0
-        
+		
         q.dispatch {
             XCTAssert(t1 == 0)
             t1 = 1
@@ -86,8 +125,9 @@ class PerfectThreadTests: XCTestCase {
     }
 
     static var allTests : [(String, (PerfectThreadTests) -> () throws -> Void)] {
-        return [
-            ("testConcurrentQueue", testConcurrentQueue),
+		return [
+			("testConcurrentQueue1", testConcurrentQueue1),
+			("testConcurrentQueue2", testConcurrentQueue2),
             ("testSerialQueue", testSerialQueue),
             ("testThreadSleep", testThreadSleep)            
         ]

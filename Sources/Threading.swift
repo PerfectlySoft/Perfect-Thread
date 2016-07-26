@@ -27,23 +27,20 @@ import Darwin
 
 /// A wrapper around a variety of threading related functions and classes.
 public struct Threading {
-
     /// Indicates that the call should have no timeout.
 	public static let noTimeout = 0.0
-	
 	// Non-instantiable.
 	private init() {}
-
 	/// The function type which can be given to `Threading.dispatch`.
 	public typealias ThreadClosure = () -> ()
-	
+}
+
+public extension Threading {
 	/// A mutex-type thread lock.
 	/// The lock can be held by only one thread. Other threads attempting to secure the lock while it is held will block.
 	/// The lock is initialized as being recursive. The locking thread may lock multiple times, but each lock should be accompanied by an unlock.
 	public class Lock {
-
 		var mutex = pthread_mutex_t()
-
 		/// Initialize a new lock object.
 		public init() {
 			var attr = pthread_mutexattr_t()
@@ -85,7 +82,9 @@ public struct Threading {
 			try closure()
 		}
 	}
+}
 
+public extension Threading {
 	/// A thread event object. Inherits from `Threading.Lock`.
 	/// The event MUST be locked before `wait` or `signal` is called.
 	/// While inside the `wait` call, the event is automatically placed in the unlocked state.
@@ -142,7 +141,9 @@ public struct Threading {
 			return ret == 0;
 		}
 	}
+}
 
+public extension Threading {
 	/// A read-write thread lock.
 	/// Permits multiple readers to hold the while, while only allowing at most one writer to hold the lock.
 	/// For a writer to acquire the lock all readers must have unlocked.
@@ -211,14 +212,9 @@ public struct Threading {
 			try closure()
 		}
 	}
+}
 
-	/// Call the provided closure on the current thread, but only if it has not been called before.
-	/// This is useful for ensuring that initialization code is only called once in a multi-threaded process.
-	/// Upon returning from `Threading.once` it is guaranteed that the closure has been executed and has completed.
-//	public static func once(_ threadOnce: inout ThreadOnce, onceFunc: ThreadOnceFunction) {
-//		let _ = pthread_once(&threadOnce, onceFunc)
-//	}
-
+public extension Threading {
     /// Block the current thread for the indicated time.
 	public static func sleep(seconds inSeconds: Double) {
 		guard inSeconds >= 0.0 else {
