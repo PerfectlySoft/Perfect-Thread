@@ -56,7 +56,7 @@ class PerfectThreadTests: XCTestCase {
 		let threadCount = 32
 		let iterationCount = 10000
 		for n in 0..<threadCount {
-			expects.append(self.expectation(withDescription: "ex\(n)"))
+			expects.append(self.expectation(description: "ex\(n)"))
 		}
 		
 		for i in 0..<threadCount {
@@ -83,7 +83,7 @@ class PerfectThreadTests: XCTestCase {
 				expects[i].fulfill()
 			}
 		}
-		self.waitForExpectations(withTimeout: 60.0) {
+		self.waitForExpectations(timeout: 60.0) {
 			ok in
 			
 		}
