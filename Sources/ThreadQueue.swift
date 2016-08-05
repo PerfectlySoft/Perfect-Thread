@@ -186,7 +186,7 @@ public extension Threading {
     #if os(Linux)
         var thrdSlf = pthread_t()
     #else
-        var thrdSlf = pthread_t(nil)
+        var thrdSlf = pthread_t(nil as OpaquePointer?)
     #endif
         var attr = pthread_attr_t()
         
@@ -202,36 +202,26 @@ public extension Threading {
         
         let holderObject = IsThisRequired(closure: closure)
     #if os(OSX)
-        typealias ThreadFunction = @convention(c) (UnsafeMutablePointer<Void>) -> UnsafeMutablePointer<Void>?
-        let pthreadFunc: ThreadFunction = { p in
-        #if FLIP
-            let unleakyObject = Unmanaged<IsThisRequired>.fromOpaque(OpaquePointer(p)).takeRetainedValue()
-        #else
-            let unleakyObject = Unmanaged<IsThisRequired>.fromOpaque(UnsafeMutablePointer<Void>(p)).takeRetainedValue()
-        #endif
+        typealias ThreadFunction = @convention(c) (UnsafeMutableRawPointer) -> UnsafeMutableRawPointer?
+        let pthreadFunc: ThreadFunction = {
+			p in
+            let unleakyObject = Unmanaged<IsThisRequired>.fromOpaque(UnsafeMutableRawPointer(p)).takeRetainedValue()
             unleakyObject.closure()
             return nil
         }
     #else
-        typealias ThreadFunction = @convention(c) (UnsafeMutablePointer<Void>?) -> UnsafeMutablePointer<Void>?
-        let pthreadFunc: ThreadFunction = { p in
+        typealias ThreadFunction = @convention(c) (UnsafeMutableRawPointer?) -> UnsafeMutableRawPointer?
+        let pthreadFunc: ThreadFunction = {
+			p in
             guard let p = p else {
                 return nil
             }
-        #if FLIP
-            let unleakyObject = Unmanaged<IsThisRequired>.fromOpaque(OpaquePointer(p)).takeRetainedValue()
-        #else
             let unleakyObject = Unmanaged<IsThisRequired>.fromOpaque(UnsafeMutablePointer<Void>(p)).takeRetainedValue()
-        #endif
             unleakyObject.closure()
             return nil
         }
     #endif
-    #if FLIP
-        let leakyObject = UnsafeMutablePointer<Void>(OpaquePointer(bitPattern: Unmanaged.passRetained(holderObject)))
-    #else
-        let leakyObject = Unmanaged.passRetained(holderObject).toOpaque()
-    #endif
+		let leakyObject = Unmanaged.passRetained(holderObject).toOpaque()
         pthread_create(&thrdSlf, &attr, pthreadFunc, leakyObject)
     }
 }
