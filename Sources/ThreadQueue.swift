@@ -216,7 +216,7 @@ public extension Threading {
             guard let p = p else {
                 return nil
             }
-            let unleakyObject = Unmanaged<IsThisRequired>.fromOpaque(UnsafeMutablePointer<Void>(p)).takeRetainedValue()
+            let unleakyObject = Unmanaged<IsThisRequired>.fromOpaque(UnsafeMutableRawPointer(p)).takeRetainedValue()
             unleakyObject.closure()
             return nil
         }
