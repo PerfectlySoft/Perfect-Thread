@@ -18,7 +18,7 @@
 //
 
 import XCTest
-@testable import PerfectThreadTestSuite
+@testable import PerfectThreadTests
 
 XCTMain([
      testCase(PerfectThreadTests.allTests),
