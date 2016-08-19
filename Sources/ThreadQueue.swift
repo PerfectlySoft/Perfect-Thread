@@ -31,7 +31,7 @@ public protocol ThreadQueue {
     /// The queue type.
     var type: Threading.QueueType { get }
     /// Execute the given closure within the queue's thread.
-    func dispatch(_ closure: Threading.ThreadClosure)
+    func dispatch(_ closure: @escaping Threading.ThreadClosure)
 }
 
 public extension Threading {
@@ -61,7 +61,7 @@ public extension Threading {
             self.startLoop()
         }
         
-        func dispatch(_ closure: ThreadFunc) {
+        func dispatch(_ closure: @escaping ThreadFunc) {
             let _ = self.lock.lock()
             defer { let _ = self.lock.unlock() }
             self.q.append(closure)
@@ -107,7 +107,7 @@ public extension Threading {
             self.startLoop()
         }
         
-        func dispatch(_ closure: ThreadFunc) {
+        func dispatch(_ closure: @escaping ThreadFunc) {
             let _ = self.lock.lock()
             defer { let _ = self.lock.unlock() }
             self.q.append(closure)
@@ -176,13 +176,13 @@ public extension Threading {
     
     /// Call the given closure on the "default" concurrent queue
     /// Returns immediately.
-    public static func dispatch(closure: Threading.ThreadClosure) {
+    public static func dispatch(closure: @escaping Threading.ThreadClosure) {
         let q = Threading.getQueue(name: "default", type: .concurrent)
         q.dispatch(closure)
     }
     
     // This is a lower level function which does not utilize the ThreadQueue system.
-    private static func dispatchOnNewThread(closure: ThreadClosure) {
+    private static func dispatchOnNewThread(closure: @escaping ThreadClosure) {
     #if os(Linux)
         var thrdSlf = pthread_t()
     #else
@@ -195,7 +195,7 @@ public extension Threading {
         
         final class IsThisRequired {
             let closure: ThreadClosure
-            init(closure: ThreadClosure) {
+            init(closure: @escaping ThreadClosure) {
                 self.closure = closure
             }
         }
