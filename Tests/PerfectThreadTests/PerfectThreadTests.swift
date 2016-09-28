@@ -123,13 +123,22 @@ class PerfectThreadTests: XCTestCase {
         let nower = getNow()
         XCTAssert(nower - now >= 2.0)
     }
+	
+	func testEventTimeout() {
+		let event = Threading.Event()
+		event.lock()
+		let waitRes = event.wait(seconds: 1.0)
+		event.unlock()
+		XCTAssert(waitRes == false)
+	}
 
     static var allTests : [(String, (PerfectThreadTests) -> () throws -> Void)] {
 		return [
 			("testConcurrentQueue1", testConcurrentQueue1),
 			("testConcurrentQueue2", testConcurrentQueue2),
             ("testSerialQueue", testSerialQueue),
-            ("testThreadSleep", testThreadSleep)            
+            ("testThreadSleep", testThreadSleep),
+            ("testEventTimeout", testEventTimeout)
         ]
     }
 }
