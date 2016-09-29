@@ -25,6 +25,24 @@ let CLOCK_MONOTONIC = Int32(1)
 import Darwin
 #endif
 
+
+private func my_pthread_cond_timedwait_relative_np(_ cond: UnsafeMutablePointer<pthread_cond_t>,
+                                                   _ mutx: UnsafeMutablePointer<pthread_mutex_t>,
+                                                   _ tmspec: UnsafePointer<timespec>) -> Int32 {
+	var time = timeval()
+	var timeout = timespec()
+	gettimeofday(&time, nil)
+	timeout.tv_sec = time.tv_sec
+	timeout.tv_nsec = Int(time.tv_usec) * 1000
+	
+	timeout.tv_sec += tmspec.pointee.tv_sec
+	timeout.tv_nsec += tmspec.pointee.tv_nsec
+	
+	let i = pthread_cond_timedwait(cond, mutx, &timeout)
+	return i
+}
+
+
 /// A wrapper around a variety of threading related functions and classes.
 public struct Threading {
     /// Indicates that the call should have no timeout.
@@ -132,12 +150,11 @@ public extension Threading {
 			if secs == Threading.noTimeout {
 				return 0 == pthread_cond_wait(&self.cond, &self.mutex)
 			}
-			let waitMillis = Int(secs * 1000.0)
 			var tm = timespec()
-			tm.tv_sec = waitMillis / 1000
-			tm.tv_nsec = (waitMillis - (tm.tv_sec * 1000)) * 1000000
+			tm.tv_sec = Int(floor(secs))
+			tm.tv_nsec = (Int(secs * 1000.0) - (tm.tv_sec * 1000)) * 1000000
 
-			let ret = pthread_cond_timedwait_relative_np(&self.cond, &self.mutex, &tm)
+			let ret = my_pthread_cond_timedwait_relative_np(&self.cond, &self.mutex, &tm)
 			return ret == 0;
 		}
 	}

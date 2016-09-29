@@ -127,9 +127,13 @@ class PerfectThreadTests: XCTestCase {
 	func testEventTimeout() {
 		let event = Threading.Event()
 		event.lock()
-		let waitRes = event.wait(seconds: 1.0)
+		let startTime = time(nil)
+		let waitRes = event.wait(seconds: 2.0)
+		let endTime = time(nil)
 		event.unlock()
 		XCTAssert(waitRes == false)
+		XCTAssert(endTime - startTime >= 2)
+		XCTAssert(endTime - startTime < 3)
 	}
 
     static var allTests : [(String, (PerfectThreadTests) -> () throws -> Void)] {
