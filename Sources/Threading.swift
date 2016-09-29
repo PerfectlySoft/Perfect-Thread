@@ -29,16 +29,20 @@ import Darwin
 private func my_pthread_cond_timedwait_relative_np(_ cond: UnsafeMutablePointer<pthread_cond_t>,
                                                    _ mutx: UnsafeMutablePointer<pthread_mutex_t>,
                                                    _ tmspec: UnsafePointer<timespec>) -> Int32 {
-	var time = timeval()
+#if os(macOS)
+	let i = pthread_cond_timedwait_relative_np(cond, mutx, tmspec)
+#else
 	var timeout = timespec()
+	var time = timeval()
 	gettimeofday(&time, nil)
 	timeout.tv_sec = time.tv_sec
 	timeout.tv_nsec = Int(time.tv_usec) * 1000
-	
+
+	clock_gettime(CLOCK_MONOTONIC, &timeout)
 	timeout.tv_sec += tmspec.pointee.tv_sec
 	timeout.tv_nsec += tmspec.pointee.tv_nsec
-	
 	let i = pthread_cond_timedwait(cond, mutx, &timeout)
+#endif
 	return i
 }
 
