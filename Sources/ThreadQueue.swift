@@ -39,7 +39,9 @@ public extension Threading {
     private static var serialQueues = [String:ThreadQueue]()
     private static var concurrentQueues = [String:ThreadQueue]()
     private static let queuesLock = Threading.Lock()
-    
+	
+	private static let defaultQueue = Threading.getQueue(name: "default", type: .concurrent)
+	
     /// Queue type indicator.
     public enum QueueType {
         /// A queue which operates on only one thread.
@@ -177,8 +179,7 @@ public extension Threading {
     /// Call the given closure on the "default" concurrent queue
     /// Returns immediately.
     public static func dispatch(closure: @escaping Threading.ThreadClosure) {
-        let q = Threading.getQueue(name: "default", type: .concurrent)
-        q.dispatch(closure)
+        defaultQueue.dispatch(closure)
     }
     
     // This is a lower level function which does not utilize the ThreadQueue system.
