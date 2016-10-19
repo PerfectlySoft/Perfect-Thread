@@ -21,7 +21,7 @@
     import SwiftGlibc
     import LinuxBridge
 #else
-    import Darwin
+    import Foundation
 #endif
 
 /// A thread queue which can dispatch a closure according to the queue type.
@@ -53,17 +53,16 @@ public extension Threading {
     private class SerialQueue: ThreadQueue {
         let name: String
         let type = Threading.QueueType.serial
-        
-        private typealias ThreadFunc = Threading.ThreadClosure
+		
         private let lock = Threading.Event()
-        private var q = [ThreadFunc]()
+		private var q: [Threading.ThreadClosure] = []
         
         init(name: String) {
             self.name = name
             self.startLoop()
         }
         
-        func dispatch(_ closure: @escaping ThreadFunc) {
+        func dispatch(_ closure: @escaping Threading.ThreadClosure) {
             let _ = self.lock.lock()
             defer { let _ = self.lock.unlock() }
             self.q.append(closure)
@@ -73,7 +72,7 @@ public extension Threading {
         private func startLoop() {
             Threading.dispatchOnNewThread {
                 while true {
-                    var block: SerialQueue.ThreadFunc?
+                    var block: Threading.ThreadClosure?
                     do {
                         let _ = self.lock.lock()
                         defer { let _ = self.lock.unlock() }
@@ -89,7 +88,11 @@ public extension Threading {
                         }
                     }
                     if let b = block {
+					#if os(macOS)
+						autoreleasepool { b() }
+					#else
                         b()
+					#endif
                     }
                 }
             }
@@ -99,17 +102,16 @@ public extension Threading {
     private class ConcurrentQueue: ThreadQueue {
         let name: String
         let type = Threading.QueueType.concurrent
-        
-        private typealias ThreadFunc = Threading.ThreadClosure
+		
         private let lock = Threading.Event()
-        private var q = [ThreadFunc]()
+        private var q: [Threading.ThreadClosure] = []
         
         init(name: String) {
             self.name = name
             self.startLoop()
         }
         
-        func dispatch(_ closure: @escaping ThreadFunc) {
+        func dispatch(_ closure: @escaping Threading.ThreadClosure) {
             let _ = self.lock.lock()
             defer { let _ = self.lock.unlock() }
             self.q.append(closure)
@@ -120,7 +122,7 @@ public extension Threading {
             for _ in 0..<max(4, Threading.processorCount) {
                 Threading.dispatchOnNewThread {
                     while true {
-                        var block: ConcurrentQueue.ThreadFunc?
+                        var block: Threading.ThreadClosure?
                         do {
                             let _ = self.lock.lock()
                             defer { let _ = self.lock.unlock() }
@@ -136,7 +138,11 @@ public extension Threading {
                             }
                         }
                         if let b = block {
-                            b()
+						#if os(macOS)
+							autoreleasepool { b() }
+						#else
+							b()
+						#endif
                         }
                     }
                 }
