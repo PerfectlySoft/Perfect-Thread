@@ -1,4 +1,4 @@
-# Perfect-Thread [简体中文](README.zh_CN.md)
+# Perfect-Thread 线程管理函数库 [English](https://github.com/PerfectlySoft/Perfect-Thread)
 
 <p align="center">
     <a href="http://perfect.org/get-involved.html" target="_blank">
@@ -10,8 +10,8 @@
     <a href="https://github.com/PerfectlySoft/Perfect" target="_blank">
         <img src="http://www.perfect.org/github/Perfect_GH_button_1_Star.jpg" alt="Star Perfect On Github" />
     </a>  
-    <a href="http://stackoverflow.com/questions/tagged/perfect" target="_blank">
-        <img src="http://www.perfect.org/github/perfect_gh_button_2_SO.jpg" alt="Stack Overflow" />
+    <a href="https://gitter.im/PerfectlySoft/Perfect" target="_blank">
+        <img src="http://www.perfect.org/github/Perfect_GH_button_2_Git.jpg" alt="Chat on Gitter" />
     </a>  
     <a href="https://twitter.com/perfectlysoft" target="_blank">
         <img src="http://www.perfect.org/github/Perfect_GH_button_3_twit.jpg" alt="Follow Perfect on Twitter" />
@@ -34,21 +34,24 @@
     <a href="http://twitter.com/PerfectlySoft" target="_blank">
         <img src="https://img.shields.io/badge/Twitter-@PerfectlySoft-blue.svg?style=flat" alt="PerfectlySoft Twitter">
     </a>
+    <a href="https://gitter.im/PerfectlySoft/Perfect?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge" target="_blank">
+        <img src="https://img.shields.io/badge/Gitter-Join%20Chat-brightgreen.svg" alt="Join the chat at https://gitter.im/PerfectlySoft/Perfect">
+    </a>
     <a href="http://perfect.ly" target="_blank">
         <img src="http://perfect.ly/badge.svg" alt="Slack Status">
     </a>
 </p>
 
-Core threading package used in Perfect. Includes support for serial and concurrent thread queues, locks, read/write locks and events.
+在Perfect软件框架体系中应用的多线程管理核心类库，包括线程并发、队列管理、资源锁的读写操作和线程事件。
 
-## Issues
+### 问题报告
 
-We are transitioning to using JIRA for all bugs and support related issues, therefore the GitHub issues has been disabled.
+我们目前正在过渡到使用JIRA来处理所有源代码资源合并申请、修复漏洞以及其它有关问题。因此，GitHub 的“issues”问题报告功能已经被禁用了。
 
-If you find a mistake, bug, or any other helpful suggestion you'd like to make on the docs please head over to [http://jira.perfect.org:8080/servicedesk/customer/portal/1](http://jira.perfect.org:8080/servicedesk/customer/portal/1) and raise it.
+如果您发现了问题，或者希望为改进本文提供意见和建议，[请在这里指出](http://jira.perfect.org:8080/servicedesk/customer/portal/1).
 
-A comprehensive list of open issues can be found at [http://jira.perfect.org:8080/projects/ISS/issues](http://jira.perfect.org:8080/projects/ISS/issues)
+在您开始之前，请参阅[目前待解决的问题清单](http://jira.perfect.org:8080/projects/ISS/issues).
 
 
-## Further Information
-For more information on the Perfect project, please visit [perfect.org](http://perfect.org).
+## 更多信息
+本项目更多信息，请参考项目官网[perfect.org](http://perfect.org)。
