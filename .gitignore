@@ -64,3 +64,4 @@ fastlane/screenshots
 
 Package/
 PerfectThread.xcodeproj/
+.DS_Store
