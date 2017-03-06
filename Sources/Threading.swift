@@ -154,13 +154,13 @@ public extension Threading {
 		/// Blocks the calling thread until a signal is received or the timeout occurs.
 		/// Returns true only if the signal was received.
 		/// Returns false upon timeout or error.
-		public func wait(seconds secs: Double = Threading.noTimeout) -> Bool {
-			if secs == Threading.noTimeout {
+		public func wait(seconds: Double = Threading.noTimeout) -> Bool {
+			if seconds == Threading.noTimeout {
 				return 0 == pthread_cond_wait(&self.cond, &self.mutex)
 			}
 			var tm = timespec()
-			tm.tv_sec = Int(floor(secs))
-			tm.tv_nsec = (Int(secs * 1000.0) - (tm.tv_sec * 1000)) * 1000000
+			tm.tv_sec = Int(floor(seconds))
+			tm.tv_nsec = (Int(seconds * 1000.0) - (tm.tv_sec * 1000)) * 1000000
 
 			let ret = my_pthread_cond_timedwait_relative_np(&self.cond, &self.mutex, &tm)
 			return ret == 0;

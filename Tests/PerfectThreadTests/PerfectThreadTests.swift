@@ -136,13 +136,47 @@ class PerfectThreadTests: XCTestCase {
 		XCTAssert(endTime - startTime < 3)
 	}
 
+	func testPromise1() {
+		let p = Promise<Bool> {
+			p in
+			Threading.sleep(seconds: 2.0)
+			p.set(true)
+		}
+		
+		XCTAssert(try p.get() == nil)
+		Threading.sleep(seconds: 3.0)
+		XCTAssert(try p.wait(seconds: 3.0) == true)
+	}
+	
+	func testPromise2() {
+		
+		struct E: Error {}
+		
+		let p = Promise<Bool> {
+			p in
+			Threading.sleep(seconds: 2.0)
+			p.fail(E())
+		}
+		
+		XCTAssert(try p.get() == nil)
+		Threading.sleep(seconds: 3.0)
+		do {
+			_ = try p.wait(seconds: 3.0)
+			XCTAssert(false)
+		} catch {
+			XCTAssert(error is E)
+		}
+	}
+	
     static var allTests : [(String, (PerfectThreadTests) -> () throws -> Void)] {
 		return [
 			("testConcurrentQueue1", testConcurrentQueue1),
 			("testConcurrentQueue2", testConcurrentQueue2),
             ("testSerialQueue", testSerialQueue),
             ("testThreadSleep", testThreadSleep),
-            ("testEventTimeout", testEventTimeout)
+            ("testEventTimeout", testEventTimeout),
+            ("testPromise1", testPromise1),
+            ("testPromise2", testPromise2)
         ]
     }
 }
