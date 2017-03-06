@@ -71,8 +71,8 @@ public class Promise<ReturnType> {
 		if let error = error {
 			throw error
 		}
-		guard let value = value else {
-			return nil
+		if let value = value {
+			return value
 		}
 		_ = event.wait(seconds: seconds)
 		if let error = error {

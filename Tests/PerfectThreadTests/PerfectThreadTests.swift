@@ -144,7 +144,6 @@ class PerfectThreadTests: XCTestCase {
 		}
 		
 		XCTAssert(try p.get() == nil)
-		Threading.sleep(seconds: 3.0)
 		XCTAssert(try p.wait(seconds: 3.0) == true)
 	}
 	
@@ -159,7 +158,6 @@ class PerfectThreadTests: XCTestCase {
 		}
 		
 		XCTAssert(try p.get() == nil)
-		Threading.sleep(seconds: 3.0)
 		do {
 			_ = try p.wait(seconds: 3.0)
 			XCTAssert(false)
