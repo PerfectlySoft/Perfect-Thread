@@ -138,7 +138,7 @@ class PerfectThreadTests: XCTestCase {
 
 	func testPromise1() {
 		let p = Promise<Bool> {
-			p in
+			(p: Promise) in
 			Threading.sleep(seconds: 2.0)
 			p.set(true)
 		}
@@ -152,7 +152,7 @@ class PerfectThreadTests: XCTestCase {
 		struct E: Error {}
 		
 		let p = Promise<Bool> {
-			p in
+			(p: Promise) in
 			Threading.sleep(seconds: 2.0)
 			p.fail(E())
 		}
@@ -166,6 +166,38 @@ class PerfectThreadTests: XCTestCase {
 		}
 	}
 	
+	func testPromise3() {
+		do {
+			let v = try Promise { 1 }.then { try $0() + 1 }.then { try $0() + 1 }.wait()
+			XCTAssert(v == 3, "\(v)")
+		} catch {
+			XCTAssert(false, "\(error)")
+		}
+	}
+	
+	func testPromise4() {
+		struct E: Error {}
+		do {
+			let v = try Promise { throw E() }.then { try $0() + 1 }.then { try $0() + 1 }.wait()
+			XCTAssert(false, "\(v)")
+		} catch {
+			XCTAssert(error is E)
+		}
+	}
+	
+	
+	
+	func testPromise5() {
+		do {
+			for _ in 0..<100000 {
+				let v = try Promise { 1 }.then { try $0() + 1 }.then { try $0() + 1 }.wait()
+				XCTAssert(v == 3, "\(v)")
+			}
+		} catch {
+			XCTAssert(false, "\(error)")
+		}
+	}
+	
     static var allTests : [(String, (PerfectThreadTests) -> () throws -> Void)] {
 		return [
 			("testConcurrentQueue1", testConcurrentQueue1),
@@ -174,7 +206,10 @@ class PerfectThreadTests: XCTestCase {
             ("testThreadSleep", testThreadSleep),
             ("testEventTimeout", testEventTimeout),
             ("testPromise1", testPromise1),
-            ("testPromise2", testPromise2)
+            ("testPromise2", testPromise2),
+            ("testPromise3", testPromise3),
+            ("testPromise4", testPromise4),
+            ("testPromise5", testPromise5)
         ]
     }
 }

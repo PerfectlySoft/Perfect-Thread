@@ -17,32 +17,99 @@
 //===----------------------------------------------------------------------===//
 //
 
+struct BrokenPromise: Error {}
+
+class DestroyerOfQueues {
+	let queue: ThreadQueue
+	init(queue: ThreadQueue) {
+		self.queue = queue
+	}
+	func dispatch(_ closure: @escaping Threading.ThreadClosure) {
+		queue.dispatch(closure)
+	}
+	deinit {
+		Threading.destroyQueue(queue)
+	}
+}
+
 /// A Promise is an object which is shared between one or more threads. 
 /// The promise will execute the closure given to it when it is created on a new thread. When the
 /// thread produces its return value a consumer thread will be able to obtain 
 /// the value or handle the error if one occurred.
+///
+/// This object is generally used in one of two ways:
+///	  * By passing a closure/function which is executed on another thread and accepts the
+///		Promise as a parameter. The promise can at some later point be .set or .fail'ed, with a 
+///		return value or error object, respectively. The Promise creator can periodically .get
+///		or .wait for the value or error. This provides the most flexible usage as the Promise can be 
+///		.set at any point, for example after a series of asynchronous API calls.
+///		Example:
+///		let prom = Promise<Bool> {
+///			(p: Promise) in
+///			Threading.sleep(seconds: 2.0)
+///			p.set(true)
+///		}
+///		XCTAssert(try prom.get() == nil) // not fulfilled yet
+///		XCTAssert(try prom.wait(seconds: 3.0) == true)
+///
+///	  * By passing a closure/function which accpts zero parameters and returns some abitrary type,
+///		followed by zero or more calls to .then
+///		Example:
+///		let v = try Promise { 1 }.then { try $0() + 1 }.then { try $0() + 1 }.wait()
+///		XCTAssert(v == 3, "\(v)")
+///
 public class Promise<ReturnType> {
 		
-	private let event = Threading.Event()
-	private var value: ReturnType?
-	private var error: Error?
+	let event = Threading.Event()
+	let queue: DestroyerOfQueues
+	var value: ReturnType?
+	var error: Error?
 	
 	/// Initialize a Promise with a closure. The closure is passed the promise object on which the
 	/// return value or error can be later set.
 	/// The closure will be executed on the default concurrent thread queue.
-	public convenience init(_ closure: @escaping (Promise<ReturnType>) -> ()) {
-		self.init(queue: Threading.getQueue(), closure: closure)
+	public init(closure: @escaping (Promise<ReturnType>) throws -> ()) {
+		self.queue = DestroyerOfQueues(queue: Threading.getQueue(type: .serial))
+		self.queue.dispatch {
+			do {
+				try closure(self)
+			} catch {
+				self.fail(error)
+			}
+		}
+	}
+	
+	public init(closure: @escaping () throws -> ReturnType) {
+		self.queue = DestroyerOfQueues(queue: Threading.getQueue(type: .serial))
+		self.queue.dispatch {
+			do {
+				self.set(try closure())
+			} catch {
+				self.fail(error)
+			}
+		}
 	}
 	
 	/// Initialize a Promise with a closure. The closure is passed the promise object on which the
 	/// return value or error can be later set.
 	/// The closure will be executed on the indicated thread queue.
-	public init(queue: ThreadQueue, closure: @escaping (Promise<ReturnType>) -> ()) {
-		queue.dispatch {
-			closure(self)
+	public init<LastType>(from: Promise<LastType>, closure: @escaping (() throws -> LastType) throws -> ReturnType) {
+		self.queue = from.queue
+		self.queue.dispatch {
+			do {
+				self.set(try closure({ guard let v = try from.wait() else { throw BrokenPromise() } ; return v }))
+			} catch {
+				self.fail(error)
+			}
 		}
 	}
 	
+	public func then<NewType>(closure: @escaping (() throws -> ReturnType) throws -> NewType) -> Promise<NewType> {
+		return Promise<NewType>(from: self, closure: closure)
+	}
+}
+
+public extension Promise {
 	/// Get the return value if it is available.
 	/// Returns nil if the return value is not available.
 	/// If a failure has occurred then the Error will be thrown.
@@ -80,7 +147,9 @@ public class Promise<ReturnType> {
 		}
 		return value
 	}
-	
+}
+
+public extension Promise {
 	/// Set the Promise's return value, enabling the consumer to retrieve it.
 	/// This is called by the producer thread.
 	public func set(_ value: ReturnType) {

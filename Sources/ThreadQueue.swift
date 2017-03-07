@@ -24,6 +24,8 @@
 	import Foundation
 #endif
 
+private let anonymousQueueName = "__unregistered__"
+
 /// A thread queue which can dispatch a closure according to the queue type.
 public protocol ThreadQueue {
 	/// The queue name.
@@ -32,6 +34,11 @@ public protocol ThreadQueue {
 	var type: Threading.QueueType { get }
 	/// Execute the given closure within the queue's thread.
 	func dispatch(_ closure: @escaping Threading.ThreadClosure)
+}
+
+protocol ThreadQueueInternal {
+	var running: Bool { get set }
+	var lock: Threading.Event { get }
 }
 
 public extension Threading {
@@ -50,11 +57,11 @@ public extension Threading {
 		case concurrent
 	}
 	
-	private class SerialQueue: ThreadQueue {
+	private class SerialQueue: ThreadQueue, ThreadQueueInternal {
 		let name: String
 		let type = Threading.QueueType.serial
-		
-		private let lock = Threading.Event()
+		var running = true
+		let lock = Threading.Event()
 		private var q: [Threading.ThreadClosure] = []
 		
 		init(name: String) {
@@ -71,17 +78,17 @@ public extension Threading {
 		
 		private func startLoop() {
 			Threading.dispatchOnNewThread {
-				while true {
+				while self.running {
 					var block: Threading.ThreadClosure?
 					do {
-						let _ = self.lock.lock()
-						defer { let _ = self.lock.unlock() }
+						self.lock.lock()
+						defer { self.lock.unlock() }
 						
 						let count = self.q.count
 						if count > 0 {
 							block = self.q.removeFirst()
 						} else {
-							let _ = self.lock.wait()
+							_ = self.lock.wait()
 							if self.q.count > 0 {
 								block = self.q.removeFirst()
 							}
@@ -99,11 +106,11 @@ public extension Threading {
 		}
 	}
 	
-	private class ConcurrentQueue: ThreadQueue {
+	private class ConcurrentQueue: ThreadQueue, ThreadQueueInternal {
 		let name: String
 		let type = Threading.QueueType.concurrent
-		
-		private let lock = Threading.Event()
+		var running = true
+		let lock = Threading.Event()
 		private var q: [Threading.ThreadClosure] = []
 		
 		init(name: String) {
@@ -121,7 +128,7 @@ public extension Threading {
 		private func startLoop() {
 			for _ in 0..<max(4, Threading.processorCount) {
 				Threading.dispatchOnNewThread {
-					while true {
+					while self.running {
 						var block: Threading.ThreadClosure?
 						do {
 							let _ = self.lock.lock()
@@ -159,32 +166,62 @@ public extension Threading {
 		return num
 	}
 	
+	/// Return the default queue
+	public static func getDefaultQueue() -> ThreadQueue {
+		return defaultQueue
+	}
+	
+	/// Returns an anonymous queue of the indicated type.
+	/// This queue can not be utilized without the returned ThreadQueue object.
+	/// The queue should be destroyed when no longer needed.
+	public static func getQueue(type: QueueType) -> ThreadQueue {
+		switch type {
+		case .serial:
+			return SerialQueue(name: anonymousQueueName)
+		case .concurrent:
+			return ConcurrentQueue(name: anonymousQueueName)
+		}
+	}
+	
 	/// Find or create a queue indicated by name and type.
-	public static func getQueue(name nam: String, type: QueueType) -> ThreadQueue {
-		let _ = Threading.queuesLock.lock()
-		defer { let _ = Threading.queuesLock.unlock() }
+	public static func getQueue(name: String, type: QueueType) -> ThreadQueue {
+		Threading.queuesLock.lock()
+		defer { Threading.queuesLock.unlock() }
 		
 		switch type {
 		case .serial:
-			if let qTst = Threading.serialQueues[nam] {
+			if let qTst = Threading.serialQueues[name] {
 				return qTst
 			}
-			let q = SerialQueue(name: nam)
-			Threading.serialQueues[nam] = q
+			let q = SerialQueue(name: name)
+			Threading.serialQueues[name] = q
 			return q
 		case .concurrent:
-			if let qTst = Threading.concurrentQueues[nam] {
+			if let qTst = Threading.concurrentQueues[name] {
 				return qTst
 			}
-			let q = ConcurrentQueue(name: nam)
-			Threading.concurrentQueues[nam] = q
+			let q = ConcurrentQueue(name: name)
+			Threading.concurrentQueues[name] = q
 			return q
 		}
 	}
 	
-	/// Return the default queue
-	public static func getQueue() -> ThreadQueue {
-		return defaultQueue
+	/// Terminate and remove a thread queue.
+	public static func destroyQueue(_ queue: ThreadQueue) {
+		if queue.name != anonymousQueueName {
+			Threading.queuesLock.lock()
+			defer { Threading.queuesLock.unlock() }
+			switch queue.type {
+			  case .serial:
+			  Threading.serialQueues.removeValue(forKey: queue.name)
+			  case .concurrent:
+			  Threading.concurrentQueues.removeValue(forKey: queue.name)
+			}
+		}
+		if var qi = queue as? ThreadQueueInternal {
+			qi.running = false
+			qi.lock.broadcast()
+		}
 	}
 	
 	/// Call the given closure on the "default" concurrent queue
