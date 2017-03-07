@@ -17,21 +17,6 @@
 //===----------------------------------------------------------------------===//
 //
 
-struct BrokenPromise: Error {}
-
-class DestroyerOfQueues {
-	let queue: ThreadQueue
-	init(queue: ThreadQueue) {
-		self.queue = queue
-	}
-	func dispatch(_ closure: @escaping Threading.ThreadClosure) {
-		queue.dispatch(closure)
-	}
-	deinit {
-		Threading.destroyQueue(queue)
-	}
-}
-
 /// A Promise is an object which is shared between one or more threads. 
 /// The promise will execute the closure given to it when it is created on a new thread. When the
 /// thread produces its return value a consumer thread will be able to obtain 
@@ -174,5 +159,20 @@ public extension Promise {
 		}
 		self.error = error
 		event.broadcast()
+	}
+}
+
+struct BrokenPromise: Error {}
+
+class DestroyerOfQueues {
+	let queue: ThreadQueue
+	init(queue: ThreadQueue) {
+		self.queue = queue
+	}
+	func dispatch(_ closure: @escaping Threading.ThreadClosure) {
+		queue.dispatch(closure)
+	}
+	deinit {
+		Threading.destroyQueue(queue)
 	}
 }
