@@ -52,7 +52,7 @@ class DestroyerOfQueues {
 ///		XCTAssert(try prom.get() == nil) // not fulfilled yet
 ///		XCTAssert(try prom.wait(seconds: 3.0) == true)
 ///
-///	  * By passing a closure/function which accpts zero parameters and returns some abitrary type,
+///	  * By passing a closure/function which accepts zero parameters and returns some abitrary type,
 ///		followed by zero or more calls to .then
 ///		Example:
 ///		let v = try Promise { 1 }.then { try $0() + 1 }.then { try $0() + 1 }.wait()
@@ -67,7 +67,8 @@ public class Promise<ReturnType> {
 	
 	/// Initialize a Promise with a closure. The closure is passed the promise object on which the
 	/// return value or error can be later set.
-	/// The closure will be executed on the default concurrent thread queue.
+	/// The closure will be executed on a new serial thread queue and will begin 
+	/// executing immediately.
 	public init(closure: @escaping (Promise<ReturnType>) throws -> ()) {
 		self.queue = DestroyerOfQueues(queue: Threading.getQueue(type: .serial))
 		self.queue.dispatch {
@@ -79,6 +80,10 @@ public class Promise<ReturnType> {
 		}
 	}
 	
+	/// Initialize a Promise with a closure. The closure will return a single value type which will
+	/// fulfill the promise.
+	/// The closure will be executed on a new serial thread queue and will begin
+	/// executing immediately.
 	public init(closure: @escaping () throws -> ReturnType) {
 		self.queue = DestroyerOfQueues(queue: Threading.getQueue(type: .serial))
 		self.queue.dispatch {
@@ -90,10 +95,7 @@ public class Promise<ReturnType> {
 		}
 	}
 	
-	/// Initialize a Promise with a closure. The closure is passed the promise object on which the
-	/// return value or error can be later set.
-	/// The closure will be executed on the indicated thread queue.
-	public init<LastType>(from: Promise<LastType>, closure: @escaping (() throws -> LastType) throws -> ReturnType) {
+	init<LastType>(from: Promise<LastType>, closure: @escaping (() throws -> LastType) throws -> ReturnType) {
 		self.queue = from.queue
 		self.queue.dispatch {
 			do {
@@ -104,6 +106,8 @@ public class Promise<ReturnType> {
 		}
 	}
 	
+	/// Chain a new Promise to an existing. The provided closure will receive the previous promise's 
+	/// value once it is available and should return a new value.
 	public func then<NewType>(closure: @escaping (() throws -> ReturnType) throws -> NewType) -> Promise<NewType> {
 		return Promise<NewType>(from: self, closure: closure)
 	}

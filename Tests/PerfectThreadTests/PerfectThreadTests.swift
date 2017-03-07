@@ -190,7 +190,10 @@ class PerfectThreadTests: XCTestCase {
 	func testPromise5() {
 		do {
 			for _ in 0..<100000 {
-				let v = try Promise { 1 }.then { try $0() + 1 }.then { try $0() + 1 }.wait()
+				let v = try Promise { 1 }
+					.then { try $0() + 1 }
+					.then { try $0() + 1 }
+					.wait()
 				XCTAssert(v == 3, "\(v)")
 			}
 		} catch {
