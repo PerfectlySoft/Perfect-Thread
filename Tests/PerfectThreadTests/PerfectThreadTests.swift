@@ -169,7 +169,7 @@ class PerfectThreadTests: XCTestCase {
 	func testPromise3() {
 		do {
 			let v = try Promise { 1 }.then { try $0() + 1 }.then { try $0() + 1 }.wait()
-			XCTAssert(v == 3, "\(v)")
+			XCTAssert(v == 3, "\(String(describing: v))")
 		} catch {
 			XCTAssert(false, "\(error)")
 		}
@@ -179,7 +179,7 @@ class PerfectThreadTests: XCTestCase {
 		struct E: Error {}
 		do {
 			let v = try Promise { throw E() }.then { try $0() + 1 }.then { try $0() + 1 }.wait()
-			XCTAssert(false, "\(v)")
+			XCTAssert(false, "\(String(describing: v))")
 		} catch {
 			XCTAssert(error is E)
 		}
@@ -191,10 +191,10 @@ class PerfectThreadTests: XCTestCase {
 		do {
 			for _ in 0..<100000 {
 				let v = try Promise { 1 }
-					.then { try $0() + 1 }
-					.then { try $0() + 1 }
+					.then { try $0() + 2 }
+					.then { try $0() + 3 }
 					.wait()
-				XCTAssert(v == 3, "\(v)")
+				XCTAssert(v == 6, "\(String(describing: v))")
 			}
 		} catch {
 			XCTAssert(false, "\(error)")

@@ -130,7 +130,14 @@ public extension Promise {
 		if let value = value {
 			return value
 		}
-		_ = event.wait(seconds: seconds)
+		repeat {
+			if let error = error {
+				throw error
+			}
+			if let value = value {
+				return value
+			}
+		} while event.wait(seconds: seconds)
 		if let error = error {
 			throw error
 		}
