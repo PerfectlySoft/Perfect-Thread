@@ -47,7 +47,7 @@ public extension Threading {
 	private static var concurrentQueues = [String:ThreadQueue]()
 	private static let queuesLock = Threading.Lock()
 	
-	private static let defaultQueue = Threading.getQueue(name: "default", type: .concurrent)
+	private static let defaultQueue = DefaultQueue()
 	
 	/// Queue type indicator.
 	public enum QueueType {
@@ -55,6 +55,16 @@ public extension Threading {
 		case serial
 		/// A queue which operates on a number of threads, usually equal to the number of logical CPUs.
 		case concurrent
+	}
+	
+	private class DefaultQueue: ThreadQueue {
+		let name = "default"
+		let type = Threading.QueueType.concurrent
+		let queue = DispatchQueue(label: "default", attributes: .concurrent)
+		@inline(__always)
+		final func dispatch(_ closure: @escaping Threading.ThreadClosure) {
+			queue.async(execute: closure)
+		}
 	}
 	
 	private class SerialQueue: ThreadQueue, ThreadQueueInternal {
