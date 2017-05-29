@@ -24,6 +24,8 @@
 	import Foundation
 #endif
 
+import Dispatch
+
 private let anonymousQueueName = "__unregistered__"
 
 /// A thread queue which can dispatch a closure according to the queue type.
