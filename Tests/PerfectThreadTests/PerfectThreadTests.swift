@@ -185,8 +185,6 @@ class PerfectThreadTests: XCTestCase {
 		}
 	}
 	
-	
-	
 	func testPromise5() {
 		do {
 			for _ in 0..<100000 {
@@ -201,6 +199,19 @@ class PerfectThreadTests: XCTestCase {
 		}
 	}
 	
+	func testDoWithLock() {
+		let lock = Threading.Lock()
+		lock.doWithLock { // test compilation of no return usage
+			for _ in 0...1 {
+				()
+			}
+		}
+		let result = lock.doWithLock {
+			return "foo"
+		}
+		XCTAssertEqual(result, "foo")
+	}
+	
     static var allTests : [(String, (PerfectThreadTests) -> () throws -> Void)] {
 		return [
 			("testConcurrentQueue1", testConcurrentQueue1),
@@ -212,7 +223,8 @@ class PerfectThreadTests: XCTestCase {
             ("testPromise2", testPromise2),
             ("testPromise3", testPromise3),
             ("testPromise4", testPromise4),
-            ("testPromise5", testPromise5)
+            ("testPromise5", testPromise5),
+			("testDoWithLock", testDoWithLock)
         ]
     }
 }

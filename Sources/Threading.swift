@@ -100,19 +100,10 @@ public extension Threading {
 		}
 
         /// Acquire the lock, execute the closure, release the lock.
-		public func doWithLock(closure: () throws -> ()) rethrows {
-			let _ = self.lock()
+		public func doWithLock<Result>(closure: () throws -> Result) rethrows -> Result {
+			_ = self.lock()
 			defer {
-				let _ = self.unlock()
-			}
-			try closure()
-		}
-
-        /// Acquire the lock, execute the closure, release the lock.
-		public func doWithLockFor<Result>(closure: () throws -> Result) rethrows -> Result {
-			let _ = self.lock()
-			defer {
-				let _ = self.unlock()
+				_ = self.unlock()
 			}
 			return try closure()
 		}
@@ -229,21 +220,21 @@ public extension Threading {
 		}
 		
         /// Acquire the read lock, execute the closure, release the lock.
-		public func doWithReadLock(closure: () throws -> ()) rethrows {
-			let _ = self.readLock()
+		public func doWithReadLock<Result>(closure: () throws -> Result) rethrows -> Result {
+			_ = self.readLock()
 			defer {
-				let _ = self.unlock()
+				_ = self.unlock()
 			}
-			try closure()
+			return try closure()
 		}
         
         /// Acquire the write lock, execute the closure, release the lock.
-		public func doWithWriteLock(closure: () throws -> ()) rethrows {
-			let _ = self.writeLock()
+		public func doWithWriteLock<Result>(closure: () throws -> Result) rethrows -> Result {
+			_ = self.writeLock()
 			defer {
-				let _ = self.unlock()
+				_ = self.unlock()
 			}
-			try closure()
+			return try closure()
 		}
 	}
 }
