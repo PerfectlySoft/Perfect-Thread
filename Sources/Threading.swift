@@ -107,6 +107,15 @@ public extension Threading {
 			}
 			try closure()
 		}
+
+        /// Acquire the lock, execute the closure, release the lock.
+		public func doWithLockFor<Result>(closure: () throws -> Result) rethrows -> Result {
+			let _ = self.lock()
+			defer {
+				let _ = self.unlock()
+			}
+			return try closure()
+		}
 	}
 }
 
