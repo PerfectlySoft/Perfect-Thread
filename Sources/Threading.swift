@@ -29,7 +29,7 @@ import Darwin
 private func my_pthread_cond_timedwait_relative_np(_ cond: UnsafeMutablePointer<pthread_cond_t>,
                                                    _ mutx: UnsafeMutablePointer<pthread_mutex_t>,
                                                    _ tmspec: UnsafePointer<timespec>) -> Int32 {
-#if os(macOS)
+#if os(macOS) || os(iOS)
 	let i = pthread_cond_timedwait_relative_np(cond, mutx, tmspec)
 #else
 	var timeout = timespec()
