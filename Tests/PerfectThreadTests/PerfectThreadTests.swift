@@ -199,6 +199,22 @@ class PerfectThreadTests: XCTestCase {
 		}
 	}
 	
+	func testPromiseFail() {
+		struct E: Error {}
+		let exp = expectation(description: "wait")
+		var err = false
+		_ = Promise { 1 }.then {
+			_ = try $0()
+			throw E()
+		}.when {
+			e in
+			err = true
+			exp.fulfill()
+		}
+		wait(for: [exp], timeout: 3)
+		XCTAssert(err)
+	}
+	
 	func testDoWithLock() {
 		let lock = Threading.Lock()
 		lock.doWithLock { // test compilation of no return usage
@@ -224,7 +240,8 @@ class PerfectThreadTests: XCTestCase {
             ("testPromise3", testPromise3),
             ("testPromise4", testPromise4),
             ("testPromise5", testPromise5),
-			("testDoWithLock", testDoWithLock)
+			("testDoWithLock", testDoWithLock),
+			("testPromiseFail", testPromiseFail)
         ]
     }
 }
