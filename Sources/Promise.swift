@@ -55,8 +55,8 @@ public class Promise<ReturnType> {
 	/// The closure will be executed on a new serial thread queue and will begin 
 	/// executing immediately.
 	public init(closure: @escaping (Promise<ReturnType>) throws -> ()) {
-		self.queue = DestroyerOfQueues(queue: Threading.getQueue(type: .serial))
-		self.queue.dispatch {
+		queue = DestroyerOfQueues(queue: Threading.getQueue(type: .serial))
+		queue.dispatch {
 			do {
 				try closure(self)
 			} catch {
@@ -70,8 +70,8 @@ public class Promise<ReturnType> {
 	/// The closure will be executed on a new serial thread queue and will begin
 	/// executing immediately.
 	public init(closure: @escaping () throws -> ReturnType) {
-		self.queue = DestroyerOfQueues(queue: Threading.getQueue(type: .serial))
-		self.queue.dispatch {
+		queue = DestroyerOfQueues(queue: Threading.getQueue(type: .serial))
+		queue.dispatch {
 			do {
 				self.set(try closure())
 			} catch {
@@ -81,8 +81,8 @@ public class Promise<ReturnType> {
 	}
 	
 	init<LastType>(from: Promise<LastType>, closure: @escaping (() throws -> LastType) throws -> ReturnType) {
-		self.queue = from.queue
-		self.queue.dispatch {
+		queue = from.queue
+		queue.dispatch {
 			do {
 				self.set(try closure({ guard let v = try from.wait() else { throw BrokenPromise() } ; return v }))
 			} catch {
@@ -95,6 +95,18 @@ public class Promise<ReturnType> {
 	/// value once it is available and should return a new value.
 	public func then<NewType>(closure: @escaping (() throws -> ReturnType) throws -> NewType) -> Promise<NewType> {
 		return Promise<NewType>(from: self, closure: closure)
+	}
+	
+	public func when(closure: @escaping (Error) throws -> ()) -> Promise<ReturnType> {
+		return Promise<ReturnType>(from: self) {
+			value in
+			do {
+				return try value()
+			} catch {
+				try closure(error)
+				throw error
+			}
+		}
 	}
 }
 
