@@ -29,23 +29,23 @@ import Darwin
 private func my_pthread_cond_timedwait_relative_np(_ cond: UnsafeMutablePointer<pthread_cond_t>,
                                                    _ mutx: UnsafeMutablePointer<pthread_mutex_t>,
                                                    _ tmspec: UnsafePointer<timespec>) -> Int32 {
-#if os(macOS) || os(iOS)
-	let i = pthread_cond_timedwait_relative_np(cond, mutx, tmspec)
-#else
-	var timeout = timespec()
-	var time = timeval()
-	gettimeofday(&time, nil)
-	timeout.tv_sec = time.tv_sec
-	timeout.tv_nsec = Int(time.tv_usec) * 1000
+#if os(Linux)
+    var timeout = timespec()
+    var time = timeval()
+    gettimeofday(&time, nil)
+    timeout.tv_sec = time.tv_sec
+    timeout.tv_nsec = Int(time.tv_usec) * 1000
 
-	clock_gettime(CLOCK_MONOTONIC, &timeout)
-	timeout.tv_sec += tmspec.pointee.tv_sec
-	timeout.tv_nsec += tmspec.pointee.tv_nsec
-	if timeout.tv_nsec >= 1000000000 {
-		timeout.tv_sec += 1
-		timeout.tv_nsec -= 1000000000
-	}
-	let i = pthread_cond_timedwait(cond, mutx, &timeout)
+    clock_gettime(CLOCK_MONOTONIC, &timeout)
+    timeout.tv_sec += tmspec.pointee.tv_sec
+    timeout.tv_nsec += tmspec.pointee.tv_nsec
+    if timeout.tv_nsec >= 1000000000 {
+        timeout.tv_sec += 1
+        timeout.tv_nsec -= 1000000000
+    }
+    let i = pthread_cond_timedwait(cond, mutx, &timeout)
+#else
+    let i = pthread_cond_timedwait_relative_np(cond, mutx, tmspec)
 #endif
 	return i
 }
