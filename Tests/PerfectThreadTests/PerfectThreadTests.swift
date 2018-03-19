@@ -211,7 +211,9 @@ class PerfectThreadTests: XCTestCase {
 			err = true
 			exp.fulfill()
 		}
-		wait(for: [exp], timeout: 3)
+		waitForExpectations(timeout: 3) {
+			_ in
+		}
 		XCTAssert(err)
 	}
 	
