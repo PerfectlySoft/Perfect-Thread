@@ -262,21 +262,21 @@ public extension Threading {
 		}
 		
 		let holderObject = IsThisRequired(closure: closure)
-		#if os(macOS) || os(iOS)
+		#if os(Linux)
+            typealias ThreadFunction = @convention(c) (UnsafeMutableRawPointer?) -> UnsafeMutableRawPointer?
+            let pthreadFunc: ThreadFunction = {
+                p in
+                guard let p = p else {
+                    return nil
+                }
+                let unleakyObject = Unmanaged<IsThisRequired>.fromOpaque(UnsafeMutableRawPointer(p)).takeRetainedValue()
+                unleakyObject.closure()
+                return nil
+            }
+        #else
 			typealias ThreadFunction = @convention(c) (UnsafeMutableRawPointer) -> UnsafeMutableRawPointer?
 			let pthreadFunc: ThreadFunction = {
 				p in
-				let unleakyObject = Unmanaged<IsThisRequired>.fromOpaque(UnsafeMutableRawPointer(p)).takeRetainedValue()
-				unleakyObject.closure()
-				return nil
-			}
-		#else
-			typealias ThreadFunction = @convention(c) (UnsafeMutableRawPointer?) -> UnsafeMutableRawPointer?
-			let pthreadFunc: ThreadFunction = {
-				p in
-				guard let p = p else {
-					return nil
-				}
 				let unleakyObject = Unmanaged<IsThisRequired>.fromOpaque(UnsafeMutableRawPointer(p)).takeRetainedValue()
 				unleakyObject.closure()
 				return nil
