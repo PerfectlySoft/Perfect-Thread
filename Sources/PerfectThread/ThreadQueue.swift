@@ -52,7 +52,7 @@ public extension Threading {
 	private static let defaultQueue = DefaultQueue()
 	
 	/// Queue type indicator.
-	public enum QueueType {
+	enum QueueType {
 		/// A queue which operates on only one thread.
 		case serial
 		/// A queue which operates on a number of threads, usually equal to the number of logical CPUs.
@@ -179,14 +179,14 @@ public extension Threading {
 	}
 	
 	/// Return the default queue
-	public static func getDefaultQueue() -> ThreadQueue {
+	static func getDefaultQueue() -> ThreadQueue {
 		return defaultQueue
 	}
 	
 	/// Returns an anonymous queue of the indicated type.
 	/// This queue can not be utilized without the returned ThreadQueue object.
 	/// The queue should be destroyed when no longer needed.
-	public static func getQueue(type: QueueType) -> ThreadQueue {
+	static func getQueue(type: QueueType) -> ThreadQueue {
 		switch type {
 		case .serial:
 			return SerialQueue(name: anonymousQueueName)
@@ -196,7 +196,7 @@ public extension Threading {
 	}
 	
 	/// Find or create a queue indicated by name and type.
-	public static func getQueue(name: String, type: QueueType) -> ThreadQueue {
+	static func getQueue(name: String, type: QueueType) -> ThreadQueue {
 		Threading.queuesLock.lock()
 		defer { Threading.queuesLock.unlock() }
 		
@@ -219,7 +219,7 @@ public extension Threading {
 	}
 	
 	/// Terminate and remove a thread queue.
-	public static func destroyQueue(_ queue: ThreadQueue) {
+	static func destroyQueue(_ queue: ThreadQueue) {
 		if queue.name != anonymousQueueName {
 			Threading.queuesLock.lock()
 			defer { Threading.queuesLock.unlock() }
@@ -238,7 +238,7 @@ public extension Threading {
 	
 	/// Call the given closure on the "default" concurrent queue
 	/// Returns immediately.
-	public static func dispatch(closure: @escaping Threading.ThreadClosure) {
+	static func dispatch(closure: @escaping Threading.ThreadClosure) {
 		defaultQueue.dispatch(closure)
 	}
 	

@@ -65,7 +65,7 @@ public extension Threading {
 	/// A mutex-type thread lock.
 	/// The lock can be held by only one thread. Other threads attempting to secure the lock while it is held will block.
 	/// The lock is initialized as being recursive. The locking thread may lock multiple times, but each lock should be accompanied by an unlock.
-	public class Lock {
+	class Lock {
 		var mutex = pthread_mutex_t()
 		/// Initialize a new lock object.
 		public init() {
@@ -115,7 +115,7 @@ public extension Threading {
 	/// The event MUST be locked before `wait` or `signal` is called.
 	/// While inside the `wait` call, the event is automatically placed in the unlocked state.
 	/// After `wait` or `signal` return the event will be in the locked state and must be unlocked.
-	public final class Event: Lock {
+	final class Event: Lock {
 
 		var cond = pthread_cond_t()
 
@@ -173,7 +173,7 @@ public extension Threading {
 	/// Permits multiple readers to hold the while, while only allowing at most one writer to hold the lock.
 	/// For a writer to acquire the lock all readers must have unlocked.
 	/// For a reader to acquire the lock no writers must hold the lock.
-	public final class RWLock {
+	final class RWLock {
 
 		var lock = pthread_rwlock_t()
 
@@ -241,7 +241,7 @@ public extension Threading {
 
 public extension Threading {
     /// Block the current thread for the indicated time.
-	public static func sleep(seconds inSeconds: Double) {
+	static func sleep(seconds inSeconds: Double) {
 		guard inSeconds >= 0.0 else {
 			return
 		}

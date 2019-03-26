@@ -115,7 +115,7 @@ public extension Promise {
 	/// Returns nil if the return value is not available.
 	/// If a failure has occurred then the Error will be thrown.
 	/// This is called by the consumer thread.
-	public func get() throws -> ReturnType? {
+	func get() throws -> ReturnType? {
 		event.lock()
 		defer {
 			event.unlock()
@@ -131,7 +131,7 @@ public extension Promise {
 	/// If a failure has occurred then the Error will be thrown.
 	/// Will block and wait up to the indicated number of seconds for the return value to be produced.
 	/// This is called by the consumer thread.
-	public func wait(seconds: Double = Threading.noTimeout) throws -> ReturnType? {
+	func wait(seconds: Double = Threading.noTimeout) throws -> ReturnType? {
 		event.lock()
 		defer {
 			event.unlock()
@@ -160,7 +160,7 @@ public extension Promise {
 public extension Promise {
 	/// Set the Promise's return value, enabling the consumer to retrieve it.
 	/// This is called by the producer thread.
-	public func set(_ value: ReturnType) {
+	func set(_ value: ReturnType) {
 		event.lock()
 		defer {
 			event.unlock()
@@ -171,7 +171,7 @@ public extension Promise {
 	
 	/// Fail the Promise and set its error value.
 	/// This is called by the producer thread.
-	public func fail(_ error: Error) {
+	func fail(_ error: Error) {
 		event.lock()
 		defer {
 			event.unlock()
