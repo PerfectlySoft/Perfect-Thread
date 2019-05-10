@@ -60,33 +60,3 @@ let package = Package(
 		]
 )
 #endif
-
-
-
-
-
-
-
-
-
-
-
-//#if os(Linux)
-//let package = Package(
-//    name: "PerfectThread",
-//    targets: [],
-//    dependencies: [
-//        .Package(url: "https://github.com/PerfectlySoft/Perfect-LinuxBridge.git", majorVersion: 3)
-//    ],
-//    exclude: []
-//)
-//#else
-//let package = Package(
-//    name: "PerfectThread",
-//    targets: [],
-//    dependencies: [
-//
-//    ],
-//    exclude: []
-//)
-//#endif
