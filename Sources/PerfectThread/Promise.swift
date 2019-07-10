@@ -43,10 +43,13 @@
 ///		let v = try Promise { 1 }.then { try $0() + 1 }.then { try $0() + 1 }.wait()
 ///		XCTAssert(v == 3, "\(v)")
 ///
+
+import Dispatch
+
 public class Promise<ReturnType> {
 		
 	let event = Threading.Event()
-	let queue: DestroyerOfQueues
+	let queue = DispatchQueue(label: "promise")
 	var value: ReturnType?
 	var error: Error?
 	
@@ -55,8 +58,7 @@ public class Promise<ReturnType> {
 	/// The closure will be executed on a new serial thread queue and will begin 
 	/// executing immediately.
 	public init(closure: @escaping (Promise<ReturnType>) throws -> ()) {
-		queue = DestroyerOfQueues(queue: Threading.getQueue(type: .serial))
-		queue.dispatch {
+		queue.async {
 			do {
 				try closure(self)
 			} catch {
@@ -70,8 +72,7 @@ public class Promise<ReturnType> {
 	/// The closure will be executed on a new serial thread queue and will begin
 	/// executing immediately.
 	public init(closure: @escaping () throws -> ReturnType) {
-		queue = DestroyerOfQueues(queue: Threading.getQueue(type: .serial))
-		queue.dispatch {
+		queue.async {
 			do {
 				self.set(try closure())
 			} catch {
@@ -81,8 +82,7 @@ public class Promise<ReturnType> {
 	}
 	
 	init<LastType>(from: Promise<LastType>, closure: @escaping (() throws -> LastType) throws -> ReturnType) {
-		queue = from.queue
-		queue.dispatch {
+		queue.async {
 			do {
 				self.set(try closure({ guard let v = try from.wait() else { throw BrokenPromise() } ; return v }))
 			} catch {
@@ -182,16 +182,3 @@ public extension Promise {
 }
 
 struct BrokenPromise: Error {}
-
-class DestroyerOfQueues {
-	let queue: ThreadQueue
-	init(queue: ThreadQueue) {
-		self.queue = queue
-	}
-	func dispatch(_ closure: @escaping Threading.ThreadClosure) {
-		queue.dispatch(closure)
-	}
-	deinit {
-		Threading.destroyQueue(queue)
-	}
-}
